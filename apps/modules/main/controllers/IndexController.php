@@ -41,10 +41,12 @@ class IndexController extends Controller
 			}
 		}
 		echo "<pre>";var_dump($temp);echo "</pre>";
-		/*$sub_menu = new Menu();
-		$sub_menu->name="phat sub 0";
-		$sub = Menu::findFirst(6);
-		$sub_menu->insertBefore($sub);*/
+
+		/*
+		$sub_menu->name="Thời Trang";
+		$sub_menu->alias= "thoi-trang";
+		$sub_menu->appendTo($sub_menu->findFirst(5));*/
+
     }
 	public function adminAction()
     {
@@ -58,6 +60,38 @@ class IndexController extends Controller
     {
 		echo "CMS Action";
     }
+	public function categoryAction()
+    {
+						// /blog/the-thao
+				/*$group = new RouterGroup(
+					array(
+						'module'     => 'main',
+						'controller' => $menu->controller,
+					)
+				);
+				$group ->setPrefix($menu->slug);
+				$group->add(
+					'/{cid:[a-z\-]+}',
+					array(
+						'controller' => 'index',
+						'action'     => 'content'
+					)
+				)->convert('cid', function ($cid) {
+					if($cid == 'eu') return 5;
+				});
+				$router->mount($group);*/
+				
+		var_dump($this->dispatcher->getParam('id'));
+		//var_dump(json_encode(array('id'=>5)));
+		echo "cate Action";
+    }
+	public function contentAction()
+    {
+		var_dump($this->dispatcher->getParam('id'));
+		
+		echo "content Action";
+    }
+	
 
 	
 }

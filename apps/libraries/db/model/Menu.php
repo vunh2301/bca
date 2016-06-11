@@ -3,13 +3,19 @@ namespace Bca\Libraries\Db\Model;
 use Phalcon\Mvc\Model;
 class Menu extends Model
 {
-	public function printd()
+	public function getParams()
+	{
+		return json_decode($this->params,true);
+		
+	}
+	public function showAlias()
 	{
 		$array = self::find(['order' => 'lft'])->toArray();
 		$temp="";
 		$alias ="";
 		foreach($array as $menu)
 		{
+			$slug = self::findFirst($menu['id']);
 			$alias[$menu["level"] - 1] = $menu["alias"];
 			if($menu["level"] > 1){
 				$prefix = '';
@@ -17,11 +23,15 @@ class Menu extends Model
 					$prefix .= '/' . $value;
 					if($index >= $menu["level"] - 2)break;
 				}
-				$temp[]=array('alias'=>$prefix . '/' . $menu["alias"]);
+				$slug->slug = $prefix . '/' . $menu["alias"];
+				//$temp[]=array('alias'=>$prefix . '/' . $menu["alias"]);
 			}else{
-				$temp[]=array('alias'=>$menu["alias"]);
+				$slug->slug = '/' . $menu["alias"];
+				//$temp[]=array('alias'=>'/'.$menu["alias"]);
 			}
+			$slug->save();
 		}
+		
 		echo "<pre>";var_dump($temp);echo "</pre>";
 	}
 	

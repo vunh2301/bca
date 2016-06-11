@@ -5,6 +5,8 @@ use Phalcon\Mvc\Application;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Config\Adapter\Ini as ConfigIni;
+use Bca\Libraries\Db\Model;
+use Phalcon\Mvc\Router\Group as RouterGroup;
 class AppBootstrap extends Application
 {
 	public $di;
@@ -33,9 +35,42 @@ class AppBootstrap extends Application
 	function initRouter($di)
 	{
 		$di->set('router', function () {
+			$menu = new Model\Menu();
+			$menu->showAlias();
 			$router = new Router();
+			$array = $menu::find(['order' => 'lft']);
+			foreach($array as $menu)
+			{
+				// /blog
+				$router->add($menu->slug, array_merge($menu->getParams(),array(
+					'module'     => 'main',
+					'controller' => $menu->controller,
+					'action'     => $menu->action
+				)));
+				/*/ /blog/the-thao
+				$group = new RouterGroup(
+					array(
+						'module'     => 'main',
+						'controller' => $menu->controller,
+					)
+				);
+				$group ->setPrefix($menu->slug);
+				$group->add(
+					'/{cid:[a-z\-]+}',
+					array(
+						'controller' => 'index',
+						'action'     => 'content'
+					)
+				)->convert('cid', function ($cid) {
+					if($cid == 'eu') return 5;
+				});
+				$router->mount($group);
+				*/
+			}
+			$router->removeExtraSlashes(true);
 			$router->setDefaultModule("main");
 			return $router;
+			
 		});	
 		
 	}
@@ -78,12 +113,11 @@ class AppBootstrap extends Application
 		$this->initLoader($di);
 		// init database
 		$this->initDb($di);
-		$menu = new Bca\Libraries\Db\Model\Menu();
-		$menu->printd();
 		// init Router
 		$this->initRouter($di);
 		// checked modules
 		$this->initModules($modules);
+		
 	return parent::__construct($di);
 }
 	
