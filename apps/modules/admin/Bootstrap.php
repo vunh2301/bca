@@ -44,9 +44,8 @@ class Bootstrap implements ModuleDefinitionInterface
         $di->set('view', function () {
             $view = new View();
             $view->setViewsDir('../apps/modules/admin/views/');
-			//$view->setLayoutsDir('/');
-			//
-			$view->setLayout('master');
+			$view->setLayoutsDir('/');
+			$view->setMainView('../master');
             return $view;
         });
     }

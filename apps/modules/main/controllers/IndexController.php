@@ -8,7 +8,7 @@ class IndexController extends Controller
 	
 	public function indexAction()
     {
-		 echo "Main Module";
+		echo "Main Module";
 		echo "<h1>WELCOME TO MULTI MODULE DASHBOARD</h1>";
         echo $this->tag->linkTo("admin","Admin Dashboard");
 		echo "<br>";

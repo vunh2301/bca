@@ -1,0 +1,56 @@
+<?= $this->tag->stylesheetLink("assets/css/layout-datatables.css");?>
+<?= $this->tag->stylesheetLink("assets/css/layout-nestable.css");?>
+
+					<!-- 
+						PANEL CLASSES:
+							panel-default
+							panel-danger
+							panel-warning
+							panel-info
+							panel-success
+
+						INFO: 	panel collapse - stored on user localStorage (handled by app.js _panels() function).
+								All pannels should have an unique ID or the panel collapse status will not be stored!
+					-->
+<div id="content" class="dashboard padding-20">
+	<div class="row">
+		<div class="col-md-9">
+			<!-- Panel Tabs Left -->
+			<div id="panel-ui-tan-l4" class="panel panel-default">
+				<?= $tree ?>
+			</div>
+		</div>
+		<div class="col-md-3">
+		
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$('.dd').nestable({
+		group: 1
+	}).on('change',function(e,el) {
+			//console.log(e);//console.log(parent);
+			if($(el).prev().length > 0){
+				// insertAfter
+				var des = $(el).prev().data('id');
+				var pos = 'insert';
+			}else{
+				// appento
+				var des = $(el).parent().parent().data('id');
+				var pos = 'append';
+			}
+			$.ajax({
+				url:'/menu/save',
+				method:'post',
+				data:{pos:pos,des:des,id:el.data('id')},
+			});
+	});
+	$('.glyphicon-trash').click(function(e){
+		alert('hello');
+		/*$.ajax({
+				url:'/menu/save',
+				method:'post',
+				data: $(this).parent().parent();
+			});*/
+	});
+</script>
