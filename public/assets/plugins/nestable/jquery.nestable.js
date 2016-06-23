@@ -46,7 +46,7 @@
             expandBtnHTML   : '<button data-action="expand" type="button">Expand</button>',
             collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
             group           : 0,
-            maxDepth        : 5,
+            maxDepth        : 100,
             threshold       : 20
         };
 
@@ -300,12 +300,12 @@
 			var parentId = el.parent().parent().data('id') || 0;
 			var prevId = el.prev().data('id') || 0;
 			
-			if(this.tmpParentId != parentId || this.tmpPrevId != prevId){
+			//if(this.tmpParentId != parentId || this.tmpPrevId != prevId){
 				this.el.trigger('change',[el]);
 				if (this.hasNewRoot) {
 					this.dragRootEl.trigger('change');
 				}
-			}
+			//}
 			this.reset();
         },
 

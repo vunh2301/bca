@@ -11,113 +11,75 @@ class MenuController extends Controller
 	public function indexAction()
     {
 		
-
-		/*if(Menu::findFirst(1)==null)
-		{
-			$root =  new Menu();
-			$root->name="Menu";
-			$root->alias="menu";
-			$root->saveNode();
-			
-			$root = Menu::findFirst(1);
-			$item1 = new Menu();
-			$item1->name  = "Tin tức";
-			$item1->alias = "tin-tuc";
-			
-			$item2 = new Menu();
-			$item2->name  = "Thời sự";
-			$item2->alias = "thoi-su";
-			$item1->appendTo($root);
-			$item2->insertAfter($item1);
-		}
-		$array = Menu::find(['order' => 'lft'])->toArray();
-		$temp="";
-		$alias ="";
-		foreach($array as $menu)
-		{
-			$alias[$menu["level"] - 1] = $menu["alias"];
-			if($menu["level"] > 1){
-				$prefix = '';
-				foreach($alias as $index => $value){
-					$prefix .= '/' . $value;
-					if($index >= $menu["level"] - 2)break;
-				}
-				$temp[]=array('alias'=>$prefix . '/' . $menu["alias"]);
-			}else{
-				$temp[]=array('alias'=>$menu["alias"]);
-			}
-		}*/
-		//$menu = new Menu();
 		$menuType = new MenuType();
 		$this->view->tree = $menuType->showTab();
     }
-	public function createAction()
+	public function createmenuAction()
 	{
-		$post  =  $this->request->getPost();
-		$name  =  $post["name"];
-		$alias =  $post["alias"];
-		$slug  =  $post["slug"];
+
+		$name       =  $this->request->get("name");
+		$alias      =  $this->request->get("alias");
+		$menu_type  =  $this->request->get("menu_type");
 		
-		if(isset($post["id"]))
+		if( $name && $alias)
 		{
-			$parentid     =  $post["id"];
-			$root         =  Menu::findFirst($parentid);
+			$root   =  Menu::findFirst(1);
 			$child        =  new Menu();
 			$child->name  =  $name;
 			$child->alias =  $alias;
+			$child->menu_type =  intval($menu_type);
 			$child->appendTo($root);
+			$this->updateSlug();
+			return $this->response->setJsonContent(array("status" => true,'id'=>$child->id));
 		}
+		return $this->response->setJsonContent(array("status" => false));
 	}
-	public function afterSave()
+	public function editmenuAction()
 	{
-		$array = Menu::find(['order' => 'lft'])->toArray();
-		$temp="";
-		$alias ="";
-		foreach($array as $menu)
+		$id         =  $this->request->get("id");
+		$name       =  $this->request->get("name");
+		$alias      =  $this->request->get("alias");
+		$item = Menu::findFirst($id);
+		$item->name=$name;
+		$item->alias=$alias;
+		if($item->save())
 		{
-			$alias[$menu["level"] - 1] = $menu["alias"];
-			if($menu["level"] > 1){
-				$prefix = '';
-				foreach($alias as $index => $value){
-					$prefix .= '/' . $value;
-					if($index >= $menu["level"] - 2)break;
-				}
-				$temp[]=array('alias'=>$prefix . '/' . $menu["alias"]);
-			}else{
-				$temp[]=array('alias'=>$menu["alias"]);
-			}
+			$this->updateSlug();
+			return $this->response->setJsonContent(array('status' => true));
 		}
-	}
-	public function editAction($id)
-	{
-		
-		
+		return $this->response->setJsonContent(array('status' => false));
+		//$menu_type  =  $this->request->get("menu_type");
 	}
 	
-	public function deleteAction($id)
+	public function deletemenuAction()
 	{
+		$id = $this->request->get('id','int');
 		$menu = new Menu();	
 		$item = $menu->findFirst($id);
-		if($item->deleteNode()===true)
+		if($item->deleteNode())
 		{
-			$this->dispatcher->forward(
-				array(
-					"controller" => "menu",
-					"action"     => "index"
-				)
-			);
-		}			
+			$this->updateSlug();
+			return $this->response->setJsonContent(array('status' => true));
+		}	
+		return $this->response->setJsonContent(array('status' => false));		
 	}
-	public function saveAction()
+	public function savemenuAction()
 	{
+
 		$pos = $this->request->get('pos');
 		$des = $this->request->get('des','int');
 		$id = $this->request->get('id','int');
+		$menuType = $this->request->get('menu_type','int');
 		$des = Menu::findFirst($des);
 		$node = Menu::findFirst($id);
-		
-		//Menu::findFirst(5)->moveAfter(Menu::findFirst(7));
-		//die();
+		$childs = $node->descendants();
+		foreach($childs as $child)
+		{
+			$child->menu_type = $menuType;
+			$child->save();
+		}
+		$node->menu_type = $menuType;
+		$node->save();
 		if($pos == 'append')
 		{
 			$node->moveAsFirst($des);
@@ -126,6 +88,42 @@ class MenuController extends Controller
 		{
 			$node->moveAfter($des);
 		}
+		$this->updateSlug();
+	}
+	public function showAction()
+	{
+		return $this->response->setJsonContent(Menu::find(['columns'=>'id,name,alias','order' => 'lft','conditions' => 'id>1']));
+	}
+	public function updateSlug()
+	{
+		$array = Menu::find(['order' => 'lft'])->toArray();
+		
+		$temp="";
+		$alias ="";
+		foreach($array as $menu)
+		{
+			$alias[$menu["level"] - 1] = $menu["alias"];
+			if($menu["level"] > 1){
+				$prefix = '';
+				foreach($alias as $index => $value){
+					$prefix .= '/' . $value;
+					if($index >= $menu["level"] - 2)break;
+				}
+				$temp[]=array('alias'=>$prefix . '/' . $menu["alias"]);
+				$item = Menu::findFirst($menu['id']);
+				$item->slug = $prefix . '/' . $menu["alias"];
+				$item->save();
+			}else{
+				$temp[]=array('alias'=>$menu["alias"]);
+				$item = Menu::findFirst($menu['id']);
+				$item->slug = $menu['alias'];
+				$item->save();
+			}
+		}
+	}
+	public function createmenutypeAction()
+	{
+		
 	}
 	
 	

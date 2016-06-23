@@ -16,41 +16,256 @@
 	<div class="row">
 		<div class="col-md-9">
 			<!-- Panel Tabs Left -->
-			<div id="panel-ui-tan-l4" class="panel panel-default">
+			<div id="panel-ui-tan-l4" class="panel panel-default menu-type">
 				<?= $tree ?>
 			</div>
 		</div>
 		<div class="col-md-3">
-		
+			<div class="panel panel-default">
+				<div class="panel-heading panel-heading-transparent">
+					<strong>ADD TO MENU</strong>
+				</div>
+
+				<div class="panel-body">
+					<form class="validate" action="menu/create" method="post" enctype="multipart/form-data" data-success="Sent! Thank you!" data-toastr-position="top-right" id="add-menu">
+					<input type="hidden" name="menu-type" value="">
+						<fieldset>
+							<!-- required [php action request] -->
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-12 col-sm-12">
+										<label>Name</label>
+										<input type="text" name="name" value="" class="form-control required">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group">
+									<div class="col-md-12 col-sm-12">
+										<label>Alias</label>
+										<input type="text" name="alias" value="" class="form-control required">
+									</div>
+								</div>
+							</div>
+						</fieldset>
+						<div class="row">
+							<div class="col-md-12">
+								<button type="submit" class="btn btn-success margin-top-30">Add menu item</button>
+							</div>
+						</div>
+					</form>					
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
+<div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="top:10%;">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<form id="modal-form" class="validate" action="menu/edit" method="post">
+				<input type="hidden" name="id-edit" value="">
+				<!-- header modal -->
+			</form>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
+
+	toastr.options.timeOut = 2000;
+	$(window).on('mousemove', function(e){
+		var target = $(e.target);
+		// condition 1 : Kiểm tra có phải do move tạo ra ?
+		// condition 2 : Đối tượng có phải là tab không ?
+		// condition 3 : Đối tượng có đang active không ?
+		if($('.dd-dragel').length > 0 && target.data('toggle') == 'tab' && !target.parent().hasClass('active')){
+			// Show Tab
+			target.tab('show');
+		}
+	});
+
 	$('.dd').nestable({
 		group: 1
 	}).on('change',function(e,el) {
-			//console.log(e);//console.log(parent);
 			if($(el).prev().length > 0){
 				// insertAfter
 				var des = $(el).prev().data('id');
 				var pos = 'insert';
 			}else{
-				// appento
+				// appendTo
 				var des = $(el).parent().parent().data('id');
 				var pos = 'append';
+				
 			}
-			$.ajax({
-				url:'/menu/save',
-				method:'post',
-				data:{pos:pos,des:des,id:el.data('id')},
-			});
+			if($(el).length>0)
+			{
+				var a = $(el).parents('.tab-pane').attr('id').replace('ttab','');
+				console.log(a);
+				$.ajax({
+					url:'/menu/savemenu',
+					method:'post',
+					data:{pos:pos,des:des,id:$(el).data('id'),menu_type:a},
+				});
+			}
 	});
-	$('.glyphicon-trash').click(function(e){
-		alert('hello');
-		/*$.ajax({
-				url:'/menu/save',
-				method:'post',
-				data: $(this).parent().parent();
-			});*/
+	$('.glyphicon-trash').on('click' , removeMenu);
+	$('.glyphicon-edit').on('click' , showModalMenuEdit);
+	$('.glyphicon-plus').on('click' , createMenuType);
+	// Add menu type
+	$('#add-button').on('submit',function(e){
+		e.preventDefault();
+		$form=$(this);
+		$name = $form.find('input[name=name-add]');
+		$sort = $form.find('input[name=name-sort]');
+		$.ajax({
+			url:'/admin/menu/createmenutype',
+			
+		});
+		
+		
 	});
+	
+	// Add Menu Item
+	$('#add-menu').on('submit',function(e){
+		e.preventDefault();
+		$form = $(this);
+		$menuTypeId = $('.menu-type .nav-tabs li.active').data('id');
+		$name = $form.find('input[name=name]');
+		$alias = $form.find('input[name=alias]');
+		$.ajax({
+			url: '/admin/menu/createmenu',
+			method: 'post',
+			data: {name:$name.val(),alias:$alias.val(),menu_type:$menuTypeId},
+			
+			success: function(data){
+					if(data.status == true)
+					{
+						if($('#ttab' + $menuTypeId + ' > .dd').find('.dd-empty').length > 0){
+							$('#ttab' + $menuTypeId + ' > .dd').html('<ol class="dd-list"></ol>');
+						}
+						var menu = $('#ttab' + $menuTypeId + ' > .dd > .dd-list').append('<li class="dd-item" data-id="'+data.id+'" data-alias="'+$alias.val()+'"><span class="glyphicon glyphicon-trash pull-right" aria-hidden="true" style="cursor:pointer;margin-top:10px;margin-right:10px;"></span><span class="glyphicon glyphicon-edit pull-right" aria-hidden="true" style="cursor:pointer;margin-top:10px;margin-right:10px;"></span><div class="dd-handle">'+$name.val()+'</div></li>').find('li[data-id=' + data.id + ']');
+						
+						menu.find('span.glyphicon-trash').on('click', removeMenu);
+						menu.find('span.glyphicon-edit').on('click', showModalMenuEdit);
+						$form[0].reset();
+						$name.focus();
+						toastr.success("Your item menu is added!");
+					}
+					else
+					{
+						toastr.error("Your item menu can't added!");
+					}
+					
+				}
+		});
+	});
+	// Edit Menu Item
+	$('#modal-form').on('submit',function(e){
+		e.preventDefault();
+		$form = $(this);
+		$nameEdit = $form.find('input[name=name-edit]');
+		$aliasEdit = $form.find('input[name=alias-edit]');
+		$idEdit = $form.find('input[name=id-edit]');
+		$.ajax({
+			url:'/admin/menu/editmenu',
+			method:'post',
+			data: {id:$idEdit.val(),name:$nameEdit.val(),alias:$aliasEdit.val()},
+			success:function(data){
+				if(data.status==true)
+				{
+					$('li[data-id=' + $idEdit.val() + ']>.dd-handle').text($nameEdit.val());
+					$('li[data-id=' + $idEdit.val() + ']').data('alias',$aliasEdit.val());
+					$('#modal ').modal('hide');
+					toastr.success("Your item menu is edited!");
+				}
+				else
+				{
+					toastr.error("Your item menu can't edited!");
+					
+				}
+			}
+		});	
+	});
+	// Function remove Menu
+	function removeMenu(e)
+	{
+		$this = $(this).parent();
+		$.ajax({
+			url:'/menu/deletemenu',
+			method:'post',
+			data: {id:$(this).parent().data('id')},
+			success:function(data){
+				if(data.status==true)
+				{
+					var parent = $this.parents('.dd');
+					$this.remove();
+					if(parent.find('li').length == 0){
+						parent.html('<div class="dd-empty"></div>');
+					}			
+					toastr.success("Your item menu is deleted!");
+				}
+				else
+				{
+					toastr.error("Your item menu can't deleted!");
+					
+				}
+				
+			}
+		});		
+	}
+	// Function Show Menu Edit
+	function showModalMenuEdit(e)
+	{
+		$el = $(this).parent();
+		// Create content modal
+		$('#modal-form').html(createModal([
+			{type:'header',name:'Edit menu item'},
+			{type:'body',name:'Name',nameVal:'name-edit'},
+			{type:'body',name:'Alias',nameVal:'alias-edit'},
+			{type:'footer',name:'Edit Menu Item',nameVal:'edit-button'}])
+		);
+		// Add value into input
+		$nameEdit = $('#modal').find('input[name=name-edit]');
+		$aliasEdit = $('#modal').find('input[name=alias-edit]');
+		$idEdit = $('#modal').find('input[name=id-edit]');
+		$nameEdit.val($el.find('.dd-handle').first().text());
+		$aliasEdit.val($el.data('alias'));
+		$idEdit.val($el.data('id'));
+		$('#modal').modal('show');
+	}
+	// Function create modal with params
+	function createModal(params)
+	{
+		var html ='' , header='' , footer='' , body='';
+		$(params).each(function(){
+			if(this.type=='header')
+			{
+				header += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title">'+this.name+'</h4>';
+			}else 
+				if(this.type=='body')
+				{
+					body += '<div class="row"><div class="form-group"><div class="col-md-12 col-sm-12"><label>'+this.name+'</label><input type="text" name="'+this.nameVal+'" value="" class="form-control required"></div></div></div>';
+					
+					
+				}else 
+					if(this.type=='footer')
+					{
+						footer += '<div class="row"><div class="col-md-12"><button type="submit" class="btn btn-success" id="'+this.nameVal+'">'+this.name+'</button></div></div>';
+					}
+		});
+		html ='<div class="modal-body">'+header+'</div><div class="modal-body">'+body+'</div><div class="modal-footer">'+footer+'</div>';
+		return html;
+	}
+	// Function Create Modal : Create menu type
+	function createMenuType(e)
+	{
+		$('#modal-form').html(createModal([
+			{type:'header',name:'Add Menu Type'},
+			{type:'body',name:'Name:',nameVal:'name-add'},
+			{type:'body',name:'Sort:',nameVal:'sort-add'},
+			{type:'footer',name:'Add Menu Type',nameVal:'add-button'}])
+		);
+		$('#modal').modal('show');
+	}
+
 </script>

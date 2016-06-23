@@ -17,7 +17,7 @@
 	jQuery(window).ready(function() {
 
 		// Load Bootstrap JS
-		loadScript(plugin_path + 'bootstrap/js/bootstrap.min.js', function() {
+		loadScript('/assets/plugins/bootstrap/js/bootstrap.min.js', function() {
 
 			FirstInit();
 
@@ -621,7 +621,7 @@
 
 		if(_el.length > 0) {
 
-			loadScript(plugin_path + 'magnific-popup/jquery.magnific-popup.min.js', function() {
+			loadScript('/assets/plugins//magnific-popup/jquery.magnific-popup.min.js', function() {
 
 				if(typeof(jQuery.magnificPopup) == "undefined") {
 					return false;
@@ -766,7 +766,7 @@
 		 **************************************************************** **/
 		if(jQuery(".sparkline").length > 0) {
 
-			loadScript(plugin_path + 'chart.sparkline/jquery.sparkline.min.js', function() {
+			loadScript('/assets/plugins//chart.sparkline/jquery.sparkline.min.js', function() {
 
 				if(jQuery().sparkline) {
 
@@ -801,7 +801,7 @@
 		 **************************************************************** **/
 		if(jQuery(".easyPieChart").length > 0) {
 
-			loadScript(plugin_path + 'chart.easypiechart/jquery.easypiechart.min.js', function() {
+			loadScript('/assets/plugins//chart.easypiechart/jquery.easypiechart.min.js', function() {
 
 				if(jQuery().easyPieChart) {
 
@@ -843,7 +843,7 @@
 		 **************************************************************** **/
 		if(jQuery("input.knob").length > 0) {
 
-			loadScript(plugin_path + 'chart.knob/dist/jquery.knob.min.js', function() {
+			loadScript('/assets/plugins//chart.knob/dist/jquery.knob.min.js', function() {
 
 				if(jQuery().knob) {
 
@@ -871,7 +871,7 @@
 
 		if(_container.length > 0) {
 
-			loadScript(plugin_path + 'typeahead.bundle.js', function() {
+			loadScript('/assets/plugins//typeahead.bundle.js', function() {
 
 				if(jQuery().typeahead) {
 					
@@ -935,8 +935,8 @@
 		 ************************ **/
 		if(jQuery('form.validate-plugin').length > 0) {
 
-			loadScript(plugin_path + 'form.validate/jquery.form.min.js', function() {
-				loadScript(plugin_path + 'form.validate/jquery.validation.min.js');
+			loadScript('/assets/plugins//form.validate/jquery.form.min.js', function() {
+				loadScript('/assets/plugins//form.validate/jquery.validation.min.js');
 			});
 
 		}
@@ -947,8 +947,8 @@
 		 ************************ **/
 		if(jQuery('form.validate').length > 0) {
 
-			loadScript(plugin_path + 'form.validate/jquery.form.min.js', function() {
-				loadScript(plugin_path + 'form.validate/jquery.validation.min.js', function() {
+			loadScript('/assets/plugins//form.validate/jquery.form.min.js', function() {
+				loadScript('/assets/plugins//form.validate/jquery.validation.min.js', function() {
 
 					if(jQuery().validate) {
 
@@ -1027,7 +1027,7 @@
 		var _container = jQuery('input.masked');
 		if(_container.length > 0) {
 
-			loadScript(plugin_path + 'form.masked/jquery.maskedinput.js', function() {
+			loadScript('/assets/plugins//form.masked/jquery.maskedinput.js', function() {
 				
 				_container.each(function() {
 				
@@ -1057,7 +1057,7 @@
 		
 		if(_container.length > 0) {
 			
-			loadScript(plugin_path + 'select2/js/select2.full.min.js', function() {
+			loadScript('/assets/plugins//select2/js/select2.full.min.js', function() {
 		
 				if(jQuery().select2) {
 					jQuery('select.select2').select2();
@@ -1077,7 +1077,7 @@
 
 		if(_container.length > 0) {
 
-			loadScript(plugin_path + 'form.stepper/jquery.stepper.min.js', function() {
+			loadScript('/assets/plugins//form.stepper/jquery.stepper.min.js', function() {
 
 				if(jQuery().stepper) {
 
@@ -1127,7 +1127,7 @@
 		var _container_1 = jQuery('.datepicker');
 		
 		if(_container_1.length > 0) {
-			loadScript(plugin_path + 'bootstrap.datepicker/js/bootstrap-datepicker.min.js', function() {
+			loadScript('/assets/plugins//bootstrap.datepicker/js/bootstrap-datepicker.min.js', function() {
 		
 				if(jQuery().datepicker) {
 
@@ -1136,7 +1136,7 @@
 							_lang 	=	_t.attr('data-lang') || 'en';
 
 						if(_lang != 'en' && _lang != '') { // load language file
-							loadScript(plugin_path + 'bootstrap.datepicker/locales/bootstrap-datepicker.'+_lang+'.min.js');
+							loadScript('/assets/plugins//bootstrap.datepicker/locales/bootstrap-datepicker.'+_lang+'.min.js');
 						}
 
 						jQuery(this).datepicker({
@@ -1173,8 +1173,8 @@
 		var _container_2 = jQuery('.rangepicker');
 		
 		if(_container_2.length > 0) {
-			loadScript(plugin_path + 'bootstrap.daterangepicker/moment.min.js', function() {
-				loadScript(plugin_path + 'bootstrap.daterangepicker/daterangepicker.js', function() {
+			loadScript('/assets/plugins//bootstrap.daterangepicker/moment.min.js', function() {
+				loadScript('/assets/plugins//bootstrap.daterangepicker/daterangepicker.js', function() {
 			
 					if(jQuery().datepicker) {
 
@@ -1218,7 +1218,7 @@
 		var _container_3 = jQuery('.timepicker');
 		
 		if(_container_3.length > 0) {
-			loadScript(plugin_path + 'timepicki/timepicki.min.js', function() {
+			loadScript('/assets/plugins//timepicki/timepicki.min.js', function() {
 			
 				if(jQuery().timepicki) {
 
@@ -1236,7 +1236,7 @@
 		var _container_4 = jQuery('.colorpicker');
 		
 		if(_container_4.length > 0) {
-			loadScript(plugin_path + 'spectrum/spectrum.min.js', function() {
+			loadScript('/assets/plugins//spectrum/spectrum.min.js', function() {
 			
 				if(jQuery().spectrum) {
 
@@ -1318,7 +1318,7 @@
 		
 		if(_container_1.length > 0) {
 			
-			loadScript(plugin_path + 'editor.summernote/summernote.min.js', function() {
+			loadScript('/assets/plugins//editor.summernote/summernote.min.js', function() {
 		
 				if(jQuery().summernote) {
 
@@ -1328,7 +1328,7 @@
 
 						if(_lang != 'en-US') { // Language!
 						alert(_lang);
-							loadScript(plugin_path + 'editor.summernote/lang/summernote-'+_lang+'.js');
+							loadScript('/assets/plugins//editor.summernote/lang/summernote-'+_lang+'.js');
 						}
 
 						jQuery(this).summernote({
@@ -1363,7 +1363,7 @@
 		
 		if(_container_2.length > 0) {
 			
-			loadScript(plugin_path + 'editor.markdown/js/bootstrap-markdown.min.js', function() {
+			loadScript('/assets/plugins//editor.markdown/js/bootstrap-markdown.min.js', function() {
 		
 				if(jQuery().markdown) {
 
@@ -1373,7 +1373,7 @@
 						var _lang = _t.attr('data-lang') || 'en';
 
 						if(_lang != 'en') { // Language!
-							loadScript(plugin_path + 'editor.markdown/locale/bootstrap-markdown.'+_lang+'.js');
+							loadScript('/assets/plugins//editor.markdown/locale/bootstrap-markdown.'+_lang+'.js');
 						}
 
 						jQuery(this).markdown({
@@ -1464,7 +1464,7 @@
 		var file_container = jQuery("input[type=file]");
 
 		if(file_container.length > 0) {
-			loadScript(plugin_path + 'custom.fle_upload.js');
+			loadScript('/assets/plugins//custom.fle_upload.js');
 		}
 
 
@@ -1941,7 +1941,7 @@
 
 		if(_btn.length > 0 || _message != false) {
 
-			loadScript(plugin_path + 'toastr/toastr.js', function() {
+			loadScript('/assets/plugins//toastr/toastr.js', function() {
 				// toastr.clear();
 
 				/** BUTTON CLICK

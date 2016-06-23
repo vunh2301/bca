@@ -73,6 +73,7 @@ class Nested extends Behavior implements BehaviorInterface
             case 'beforeCreate':
             case 'beforeDelete':
             case 'beforeUpdate':
+			break;
                 if (!$this->ignoreEvent) {
                     throw new Exception(
                         sprintf(
@@ -83,7 +84,7 @@ class Nested extends Behavior implements BehaviorInterface
                         )
                     );
                 }
-                break;
+                
         }
     }
 

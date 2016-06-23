@@ -18,7 +18,6 @@
             var listener;
             var toastId = 0;
             var toastType = {
-                primary: 'primary',
                 error: 'error',
                 info: 'info',
                 success: 'success',
@@ -28,7 +27,6 @@
             var toastr = {
                 clear: clear,
                 remove: remove,
-                primary: primary,
                 error: error,
                 getContainer: getContainer,
                 info: info,
@@ -79,16 +77,6 @@
 
             function subscribe(callback) {
                 listener = callback;
-            }
-
-            function primary(message, title, optionsOverride) {
-                return notify({
-                    type: toastType.primary,
-                    iconClass: getOptions().iconClasses.primary,
-                    message: message,
-                    optionsOverride: optionsOverride,
-                    title: title
-                });
             }
 
             function success(message, title, optionsOverride) {
@@ -182,7 +170,6 @@
 
                     extendedTimeOut: 1000,
                     iconClasses: {
-                        primary: 'toast-primary',
                         error: 'toast-error',
                         info: 'toast-info',
                         success: 'toast-success',
