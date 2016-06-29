@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>Smarty Admin</title>
+		<meta name="description" content="" />
+		<meta name="Author" content="Dorin Grigoras [www.stepofweb.com]" />
+
+		<!-- mobile settings -->
+		<meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0" />
+
+		<!-- WEB FONTS 
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800&amp;subset=latin,latin-ext,cyrillic,cyrillic-ext" rel="stylesheet" type="text/css" />-->
+
+		<!-- THEME CSS -->
+		<?= $this->tag->stylesheetLink("assets/plugins/bootstrap/css/bootstrap.min.css");?>
+		<?= $this->tag->stylesheetLink("assets/css/essentials.css");?>
+		<?= $this->tag->stylesheetLink("assets/css/layout.css");?>
+		<?= $this->tag->stylesheetLink("assets/css/color_scheme/green.css");?>
+		<?= $this->tag->stylesheetLink('assets/plugins/toastr/toastr.css')?>
+		<!-- CORE CSS -->
+		<?= $this->tag->stylesheetLink("assets/css/sitebuilder.css");?>
+		
+		<?= $this->tag->javascriptInclude('assets/plugins/jquery/jquery-2.1.4.min.js')?>
+		<?= $this->tag->javascriptInclude('assets/plugins/nestable/jquery.nestable.js')?>
+		<?= $this->tag->javascriptInclude('assets/plugins/bootstrap/js/bootstrap.min.js')?>
+		<?= $this->tag->javascriptInclude('assets/plugins/toastr/toastr.js')?>
+		<?= $this->tag->javascriptInclude('assets/plugins/sitebuilder/sitebuilder.js')?>
+		
+		
+	</head>
+	<!--
+		.boxed = boxed version
+	-->
+	<body id="main">
+		<div class="wrap-bar">
+			<div id="top-header"></div>
+			<div id="edit-area"></div>
+			<div id="side-nav">
+				<div class="side-nav-top">
+					<div class="site-control wrap-span text-center" data-id="control.add" data-title="Add Content">
+						<i class="fa fa-plus inline-block" aria-hidden="true"><span class="label-span block">Add</span></i>
+					</div>
+					<div class="site-control wrap-span text-center" data-id="control.pages" data-handle="loadMenu" data-title="Pages Manager">
+						<i class="fa fa-file-o inline-block" aria-hidden="true"><span class="label-span block">Pages</span></i>
+					</div>
+					<div class="site-control wrap-span text-center" data-id="control.section" data-title="Page Sections">
+						<i class="fa fa-file-text-o inline-block" aria-hidden="true"><span class="label-span block">Sections</span></i>
+					</div>
+					<div class="site-control wrap-span text-center" data-id="control.design" data-title="Design">
+						<i class="fa fa-pencil inline-block" aria-hidden="true"><span class="label-span block">Design</span></i>
+					</div>
+					<div class="site-control wrap-span text-center" data-id="control.blog" data-title="Blog Manager">
+						<i class="fa fa-bold inline-block" aria-hidden="true"><span class="label-span block">Blog</span></i>
+					</div>
+				</div>
+				<div class="side-nav-bottom">
+					<div class="site-control wrap-span text-center" data-id="control.Setting" data-title="Setting">
+						<i class="fa fa-cog inline-block" aria-hidden="true"><span class="label-span block">Setting</span></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+	$('#main').siteBuilder({htmlPanelAdd:'jajaj'});
+	/*
+	$('.wrap-span').on('click',showPanel);
+	function showPanel(e)
+	{
+			
+			$span = $(this);
+			$span.parent().find('.wrap-span-choose').each(function(){
+				$(this).removeClass('wrap-span-choose');
+			});
+			if($span.parent().find('.panel').length==0)
+			{
+				
+				$span.parent().append('<div id="add-panel" class="panel panel-default"><div class="panel-heading">Add Something<button type="button" class="close" data-target="#add-panel" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button></div><div class="panel-body">Write Something here</div></div>');
+				$span.addClass('wrap-span-choose');
+				$span.find('.fa').css('color','#fff');
+				$span.parent().find('#add-panel').fadeIn(500);
+			}
+			else
+			{
+				$span.removeClass('wrap-span-choose');
+				$span.find('.fa').css('color','#9a9ea8');
+				$span.parent().find('#add-panel').fadeOut(500,function(){
+					$span.parent().find('.panel').remove();
+					});
+
+			}
+	}*/
+	</script>
+</html>

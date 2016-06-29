@@ -2,6 +2,7 @@
 namespace Bca\Modules\Admin\Controllers;
 use Bca\Modules\Admin\Models\Menu;
 use Bca\Modules\Admin\Models\MenuType;
+use Bca\Modules\Admin\Models\Layout;
 use Phalcon\Mvc\Controller;
 use Phalcon\Tag;
 
@@ -10,16 +11,17 @@ class MenuController extends Controller
 	
 	public function indexAction()
     {
-		
 		$menuType = new MenuType();
+		$layout =   new Layout();
 		$this->view->tree = $menuType->showTab();
+		$this->view->listLayout = $layout->getSelectOptions(1);
     }
 	public function createmenuAction()
 	{
-
 		$name       =  $this->request->get("name");
 		$alias      =  $this->request->get("alias");
-		$menu_type  =  $this->request->get("menu_type");
+		$menuTypeId  =  $this->request->get("menuTypeId");
+		$layoutId  =  $this->request->get("layoutId");
 		
 		if( $name && $alias)
 		{
@@ -27,7 +29,8 @@ class MenuController extends Controller
 			$child        =  new Menu();
 			$child->name  =  $name;
 			$child->alias =  $alias;
-			$child->menu_type =  intval($menu_type);
+			$child->menuTypeId =  intval($menuTypeId);
+			$child->layoutId =  intval($layoutId);
 			$child->appendTo($root);
 			$this->updateSlug();
 			return $this->response->setJsonContent(array("status" => true,'id'=>$child->id));
@@ -48,7 +51,6 @@ class MenuController extends Controller
 			return $this->response->setJsonContent(array('status' => true));
 		}
 		return $this->response->setJsonContent(array('status' => false));
-		//$menu_type  =  $this->request->get("menu_type");
 	}
 	
 	public function deletemenuAction()
@@ -69,16 +71,16 @@ class MenuController extends Controller
 		$pos = $this->request->get('pos');
 		$des = $this->request->get('des','int');
 		$id = $this->request->get('id','int');
-		$menuType = $this->request->get('menu_type','int');
+		$menuType = $this->request->get('menuTypeId','int');
 		$des = Menu::findFirst($des);
 		$node = Menu::findFirst($id);
 		$childs = $node->descendants();
 		foreach($childs as $child)
 		{
-			$child->menu_type = $menuType;
+			$child->menuTypeId = $menuType;
 			$child->save();
 		}
-		$node->menu_type = $menuType;
+		$node->menuTypeId = $menuType;
 		$node->save();
 		if($pos == 'append')
 		{
@@ -123,9 +125,39 @@ class MenuController extends Controller
 	}
 	public function createmenutypeAction()
 	{
+		$name = $this->request->get('name');
+		$sort = $this->request->get('sort','int');
+		$menuType = new MenuType();
+		if($name && $sort)
+		{
+			$menuType->name = $name;
+			$menuType->sort = $sort;
+			if($menuType->save())
+			{
+				return $this->response->setJsonContent(array('status' => true,'id'=> $menuType->id));		
+			}
+		}
+		return $this->response->setJsonContent(array('status' => false));
 		
 	}
-	
+	public function deletemenutypeAction()
+	{
+		$id = $this->request->get('id','int');
+		$menuType = new MenuType();	
+		$item = $menuType->findFirst($id);
+		$children = Menu::find('menuTypeId='.$item->id);
+		//Echo '<pre>';var_dump($children->toArray());Echo '</pre>';die();
+		if($item->delete())
+		{
+			foreach($children as $child)
+				{
+					$child->deleteNode();
+				}
+			return $this->response->setJsonContent(array('status' => true));
+		}	
+		return $this->response->setJsonContent(array('status' => false));
+		
+	}
 	
 
 	

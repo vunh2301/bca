@@ -1,0 +1,75 @@
+<?= $this->tag->stylesheetLink("assets/css/layout-datatables.css");?>
+<?= $this->tag->stylesheetLink("assets/css/layout-nestable.css");?>
+
+					<!-- 
+						PANEL CLASSES:
+							panel-default
+							panel-danger
+							panel-warning
+							panel-info
+							panel-success
+
+						INFO: 	panel collapse - stored on user localStorage (handled by app.js _panels() function).
+								All pannels should have an unique ID or the panel collapse status will not be stored!
+					-->
+<div id="content" class="dashboard padding-20">
+	<div class="row">
+		<div class="col-md-12">
+			<div id="panel-ui-tan-l4" class="panel panel-default">
+				<div class="panel-heading">
+					<h4>Layout Setting</h4>	
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="form-group">
+							<div class="col-md-3 col-sm-3">
+								<label>Layout</label>
+								<select name="layout" class="form-control pointer required">
+								<?= $listLayout ?>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row margin-top-20">
+						<div class="form-group">
+							<div class="col-md-3 col-sm-3">
+								<label style="cursor:pointer;" id="preview">Preview Layout</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+
+			<!-- header modal -->
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myLargeModalLabel">Layout Preview</h4>
+			</div>
+
+			<!-- body modal -->
+			<div class="modal-body">
+
+			</div>
+
+		</div>
+	</div>
+</div>
+<script>
+$('#preview').on('click',function(e){
+	$.ajax({
+		url:'/admin/layout/getpreview/'+$('select[name=layout]').val(),
+		method:'get',
+		dataType:'html',
+		success:function(data)
+		{
+			$('.modal-body').html(data);
+		}
+	});
+	$('.modal').modal('show');});
+</script>

@@ -14,7 +14,7 @@ class Menu extends \Phalcon\Mvc\Model
     }
 	public function showTree($typeId)
 	{
-		$tree = Menu::find(['order' => 'lft','conditions' => 'id>1 AND menu_type='.$typeId]);
+		$tree = Menu::find(['order' => 'lft','conditions' => 'id>1 AND menuTypeId='.$typeId]);
 		$current_depth = 0;
 		$counter = 0;
 		$result = '';
